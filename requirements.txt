@@ -1,0 +1,5 @@
+# Optional dependencies
+# Note: The project is built to run with ZERO external pip dependencies using Python's standard library.
+# If you wish to use Flask or scikit-learn for further experimentation:
+flask>=2.3.0
+scikit-learn>=1.3.0

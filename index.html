@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Spam Filter — Naive Bayes Classifier</title>
+  <link rel="stylesheet" href="static/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="logo-area">
+        <div class="logo-icon">🛡️</div>
+        <div class="logo-text">
+          <h1>Email Spam Filter</h1>
+          <p>Multinomial Naive Bayes (Ham vs. Spam)</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="badge-tag">Laplace Smoothing α=1.0</span>
+        <button id="themeToggle" class="theme-toggle">
+          <span>☀️ Light Mode</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Navigation Tabs -->
+    <nav class="tabs-nav">
+      <button class="tab-btn active" data-tab="tab-analyzer">
+        <span>⚡ Live Classifier</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-math">
+        <span>📐 Bayes' Theorem Math</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-dataset">
+        <span>📊 Dataset & Vocabulary</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-train">
+        <span>➕ Train Custom Data</span>
+      </button>
+    </nav>
+
+    <!-- TAB 1: Live Email Classifier -->
+    <section id="tab-analyzer" class="tab-panel active">
+      <div class="app-grid">
+        
+        <!-- Left Panel: Input & Samples -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <span>✉️</span> Email Input
+            </h2>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Real-time analysis enabled</span>
+          </div>
+
+          <!-- Quick Test Samples -->
+          <div class="samples-bar">
+            <div class="samples-label">
+              <span>⚡ One-Click Test Samples:</span>
+            </div>
+            <div id="sampleChips" class="samples-chips">
+              <!-- Dynamically rendered samples -->
+            </div>
+          </div>
+
+          <!-- Input Fields -->
+          <div class="form-group">
+            <label for="emailSubject">Subject Line</label>
+            <input type="text" id="emailSubject" class="form-control" placeholder="e.g., Claim your $1,000,000 lottery winnings now!">
+          </div>
+
+          <div class="form-group">
+            <label for="emailBody">Email Body Text</label>
+            <textarea id="emailBody" class="form-control" placeholder="Type or paste the contents of an email here..."></textarea>
+          </div>
+
+          <div class="action-row">
+            <button id="clearBtn" class="btn btn-secondary">
+              <span>🗑️ Clear</span>
+            </button>
+            <button id="analyzeBtn" class="btn btn-primary">
+              <span>🔍 Analyze Email</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Panel: Results & Diagnostics -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <span>📊</span> Classification Result
+            </h2>
+          </div>
+
+          <div id="resultCard">
+            <!-- Dynamic Result Card -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 2: Bayes Theorem Math -->
+    <section id="tab-math" class="tab-panel">
+      <div class="card">
+        <h2 class="card-title" style="margin-bottom: 1rem;">
+          <span>📐</span> How Naive Bayes Classifies Emails
+        </h2>
+        
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+          Naive Bayes calculates the probability that an email belongs to a class (\(C \in \{\text{Spam}, \text{Ham}\}\)) given the observed words (\(W = \{w_1, w_2, \dots, w_n\}\)).
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+          
+          <div class="math-card">
+            <h3 style="color: var(--primary); margin-bottom: 0.5rem;">1. Bayes' Theorem</h3>
+            <div class="math-formula">
+              P(Spam | W) = [ P(Spam) × ∏ P(wᵢ | Spam) ] / P(W)
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Calculates the posterior probability given the product of individual word likelihoods multiplied by the prior probability of spam.
+            </p>
+          </div>
+
+          <div class="math-card">
+            <h3 style="color: var(--warning-yellow); margin-bottom: 0.5rem;">2. Laplace Smoothing</h3>
+            <div class="math-formula">
+              P(wᵢ | c) = (Count(wᵢ, c) + α) / (Total Words in c + α × |V|)
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Prevents zero-probability errors when encountering words that never appeared in a specific training category (setting α = 1.0).
+            </p>
+          </div>
+
+          <div class="math-card">
+            <h3 style="color: var(--ham-green); margin-bottom: 0.5rem;">3. Log-Space Computation</h3>
+            <div class="math-formula">
+              log P(c | W) = log P(c) + ∑ log P(wᵢ | c)
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Multiplication of many small probabilities causes floating-point underflow in computers. Adding log probabilities preserves numerical precision.
+            </p>
+          </div>
+
+          <div class="math-card">
+            <h3 style="color: var(--spam-red); margin-bottom: 0.5rem;">4. The "Naive" Assumption</h3>
+            <div class="math-formula">
+              P(w₁, w₂, ..., wₙ | c) = ∏ P(wᵢ | c)
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Assumes that all words in an email are conditionally independent of each other given the class. Despite being simplistic, it delivers outstanding accuracy in spam filtering!
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Dataset & Vocabulary -->
+    <section id="tab-dataset" class="tab-panel">
+      <div id="statsContainer">
+        <!-- Dynamically rendered statistics -->
+      </div>
+    </section>
+
+    <!-- TAB 4: Train Custom Data -->
+    <section id="tab-train" class="tab-panel">
+      <div class="card" style="max-width: 700px; margin: 0 auto;">
+        <h2 class="card-title" style="margin-bottom: 0.5rem;">
+          <span>➕</span> Add Email to Training Set
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.5rem;">
+          Expand the classifier's vocabulary by adding new custom Ham or Spam emails. The model retrains in milliseconds.
+        </p>
+
+        <form id="trainForm">
+          <div class="form-group">
+            <label for="customLabel">Email Classification</label>
+            <select id="customLabel" class="form-control">
+              <option value="spam">🚨 SPAM (Unsolicited / Phishing / Scams / Marketing)</option>
+              <option value="ham">✅ HAM (Legitimate / Personal / Work / Invoices)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="customSubject">Subject Line</label>
+            <input type="text" id="customSubject" class="form-control" placeholder="Enter subject...">
+          </div>
+
+          <div class="form-group">
+            <label for="customBody">Email Body</label>
+            <textarea id="customBody" class="form-control" style="min-height: 120px;" placeholder="Enter email text..."></textarea>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.2rem;">
+            <div id="trainStatus" style="font-size: 0.88rem;"></div>
+            <button type="submit" class="btn btn-primary">
+              <span>🚀 Train Model</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>Email Spam Filter powered by Naive Bayes &bull; Designed for high accuracy and fast email classification</p>
+  </footer>
+
+  <script src="static/app.js"></script>
+</body>
+</html>
