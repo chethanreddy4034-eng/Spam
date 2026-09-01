@@ -114,7 +114,7 @@
         </h2>
         
         <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
-          Naive Bayes calculates the probability that an email belongs to a class (\(C \in \{\text{Spam}, \text{Ham}\}\)) given the observed words (\(W = \{w_1, w_2, \dots, w_n\}\)).
+          Multinomial Naive Bayes calculates the posterior probability that an incoming email belongs to category (Spam or Ham) given the sequence of observed words.
         </p>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
@@ -125,7 +125,7 @@
               P(Spam | W) = [ P(Spam) × ∏ P(wᵢ | Spam) ] / P(W)
             </div>
             <p style="font-size: 0.85rem; color: var(--text-muted);">
-              Calculates the posterior probability given the product of individual word likelihoods multiplied by the prior probability of spam.
+              Calculates the posterior probability by multiplying prior class probability by the product of individual word likelihoods.
             </p>
           </div>
 
@@ -135,7 +135,7 @@
               P(wᵢ | c) = (Count(wᵢ, c) + α) / (Total Words in c + α × |V|)
             </div>
             <p style="font-size: 0.85rem; color: var(--text-muted);">
-              Prevents zero-probability errors when encountering words that never appeared in a specific training category (setting α = 1.0).
+              Prevents zero-probability multiplication errors when encountering words that never appeared in training data (setting α = 1.0).
             </p>
           </div>
 
@@ -145,7 +145,7 @@
               log P(c | W) = log P(c) + ∑ log P(wᵢ | c)
             </div>
             <p style="font-size: 0.85rem; color: var(--text-muted);">
-              Multiplication of many small probabilities causes floating-point underflow in computers. Adding log probabilities preserves numerical precision.
+              Multiplication of many small probabilities causes floating-point underflow. Computing in log-space replaces multiplication with addition.
             </p>
           </div>
 
@@ -155,7 +155,7 @@
               P(w₁, w₂, ..., wₙ | c) = ∏ P(wᵢ | c)
             </div>
             <p style="font-size: 0.85rem; color: var(--text-muted);">
-              Assumes that all words in an email are conditionally independent of each other given the class. Despite being simplistic, it delivers outstanding accuracy in spam filtering!
+              Assumes all word occurrences are conditionally independent given the email category. Despite its simplicity, it delivers remarkable classification accuracy!
             </p>
           </div>
 
@@ -166,7 +166,7 @@
     <!-- TAB 3: Dataset & Vocabulary -->
     <section id="tab-dataset" class="tab-panel">
       <div id="statsContainer">
-        <!-- Dynamically rendered statistics -->
+        <!-- Dynamically rendered statistics & Interactive Dataset Explorer -->
       </div>
     </section>
 
@@ -177,7 +177,7 @@
           <span>➕</span> Add Email to Training Set
         </h2>
         <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.5rem;">
-          Expand the classifier's vocabulary by adding new custom Ham or Spam emails. The model retrains in milliseconds.
+          Expand the classifier's vocabulary by adding custom Ham or Spam emails. The model retrains in real-time and updates vocabulary statistics.
         </p>
 
         <form id="trainForm">
@@ -213,7 +213,7 @@
 
   <!-- Footer -->
   <footer>
-    <p>Email Spam Filter powered by Naive Bayes &bull; Designed for high accuracy and fast email classification</p>
+    <p>Email Spam Filter powered by Naive Bayes &bull; Pure Python Backend &amp; Fast Client-Side Classifier Engine</p>
   </footer>
 
   <script src="static/app.js"></script>
