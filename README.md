@@ -1,10 +1,10 @@
-# 🛡️ Email Spam Filter (Naive Bayes Classifier Web App)
+#  Email Spam Filter (Naive Bayes Classifier Web App)
 
 An interactive, responsive web application and machine learning engine that uses **Multinomial Naive Bayes** to classify emails as **HAM (Legitimate)** or **SPAM**.
 
 ---
 
-## ✨ Features
+## Features
 
 - **Multinomial Naive Bayes Algorithm**:
   - Implemented in pure Python with zero mandatory pip dependencies.
@@ -25,7 +25,7 @@ An interactive, responsive web application and machine learning engine that uses
 
 ---
 
-## 🚀 How to Run
+##  How to Run
 
 ### Method 1: Run with Python Web Server (Recommended)
 
@@ -51,7 +51,7 @@ Simply open the file in your favorite browser:
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 email-spam-filter/
@@ -74,7 +74,7 @@ email-spam-filter/
 
 ---
 
-## 🧪 Running Tests & Retraining
+##  Running Tests & Retraining
 
 - **Run Unit Tests**:
   ```bash
