@@ -443,37 +443,85 @@ window.addEventListener('DOMContentLoaded', async () => {
 // Server Sync
 async function syncWithServer() {
   try {
-    const res = await fetch('/api/stats', { signal: AbortSignal.timeout(1500) });
+    const res = await fetch('/api/stats', {
+      signal: AbortSignal.timeout(1500)
+    });
+
     if (res.ok) {
       isServerOnline = true;
-      const stats = await res.json();
-      document.getElementById('statTotalSamples').innerText = stats.total_samples;
-      document.getElementById('statVocabSize').innerText = stats.vocab_size;
-      document.getElementById('statClassSplit').innerText = `${stats.class_counts.ham} / ${stats.class_counts.spam}`;
 
-      // Load dataset & vocabulary from server
+      const stats = await res.json();
+
+      // Update Total Samples
+      document.getElementById('statTotalSamples').innerText =
+        stats.total_samples;
+
+      // Update Vocabulary Size
+      document.getElementById('statVocabSize').innerText =
+        stats.vocab_size;
+
+      // Load dataset and vocabulary from server
       const [dRes, vRes] = await Promise.all([
         fetch('/api/dataset'),
         fetch('/api/vocabulary')
       ]);
+
       if (dRes.ok) {
         const dJson = await dRes.json();
+
         if (dJson.dataset && dJson.dataset.length > 0) {
           allDatasetEmails = dJson.dataset;
           clientNB.fit(allDatasetEmails);
         }
       }
+
       if (vRes.ok) {
         const vJson = await vRes.json();
+
         if (vJson.vocabulary && vJson.vocabulary.length > 0) {
           allVocabItems = vJson.vocabulary;
         }
       }
+
+      // Count HAM from updated dataset
+      const hamCount = allDatasetEmails.filter(
+        email => String(email.label).toLowerCase() === 'ham'
+      ).length;
+
+      // Count SPAM from updated dataset
+      const spamCount = allDatasetEmails.filter(
+        email => String(email.label).toLowerCase() === 'spam'
+      ).length;
+
+      // Update HAM / SPAM display
+      document.getElementById('statClassSplit').innerText =
+        `${hamCount} / ${spamCount}`;
     }
+
   } catch (e) {
+
     isServerOnline = false;
-    document.getElementById('statTotalSamples').innerText = allDatasetEmails.length;
-    document.getElementById('statVocabSize').innerText = allVocabItems.length;
+
+    // Update from local data
+    document.getElementById('statTotalSamples').innerText =
+      allDatasetEmails.length;
+
+    document.getElementById('statVocabSize').innerText =
+      allVocabItems.length;
+
+    // Count HAM
+    const hamCount = allDatasetEmails.filter(
+      email => String(email.label).toLowerCase() === 'ham'
+    ).length;
+
+    // Count SPAM
+    const spamCount = allDatasetEmails.filter(
+      email => String(email.label).toLowerCase() === 'spam'
+    ).length;
+
+    // Update display
+    document.getElementById('statClassSplit').innerText =
+      `${hamCount} / ${spamCount}`;
   }
 
   filteredDataset = [...allDatasetEmails];
@@ -498,7 +546,7 @@ function renderDatasetCards() {
         <div>
           <div class="email-card-header">
             <span class="trigger-badge ${isSpam ? 'spam' : 'ham'}">
-              ${isSpam ? '🚨 SPAM' : '✅ HAM'}
+              ${isSpam ? ' SPAM' : ' HAM'}
             </span>
             <span style="font-size: 0.75rem; color: var(--text-faint);">#${idx + 1} &bull; ${wordCount} words</span>
           </div>
@@ -839,10 +887,28 @@ if (trainForm) {
     filteredVocab = [...allVocabItems];
 
     document.getElementById('statTotalSamples').innerText = allDatasetEmails.length;
-    document.getElementById('statVocabSize').innerText = allVocabItems.length;
-    renderDatasetCards();
-    renderVocabTable();
-    trainForm.reset();
+
+document.getElementById('statVocabSize').innerText = allVocabItems.length;
+
+// Count HAM emails
+const hamCount = allDatasetEmails.filter(
+    email => email.label === 'ham'
+).length;
+
+// Count SPAM emails
+const spamCount = allDatasetEmails.filter(
+    email => email.label === 'spam'
+).length;
+
+// Update HAM / SPAM count
+document.getElementById('statClassSplit').innerText =
+    `${hamCount} / ${spamCount}`;
+
+renderDatasetCards();
+
+renderVocabTable();
+
+trainForm.reset();
   });
 }
 

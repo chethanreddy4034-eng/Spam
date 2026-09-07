@@ -178,5 +178,15 @@
     "label": "ham",
     "subject": "Team Standup Notes and Action Items - Tuesday",
     "body": "Good morning everyone! Quick recap of today standup: backend team is finishing API auth tests, frontend team is polishing the responsive navigation bar, and QA will begin end-to-end regression testing on Wednesday."
+  },
+  {
+    "label": "ham",
+    "subject": "Your Monthly Statement is Ready",
+    "body": "Hello, your latest electric utility statement for August is now available in your account portal. Your total amount due is $64.20 by September 25th. You can view the full PDF breakdown by logging in to your main dashboard."
+  },
+  {
+    "label": "ham",
+    "subject": "Your Monthly Statement is Ready",
+    "body": "Hello, your latest electric utility statement for August is now available in your account portal. Your total amount due is $64.20 by September 25th. You can view the full PDF breakdown by logging in to your main dashboard."
   }
 ]
